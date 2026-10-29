@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7f3">
+  <title>FundMe — 让支持发生</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%23285e48'/%3E%3Cpath d='M12 12h17v5H17v5h10v5H17v6h-5z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="FundMe 首页"><span class="brand-mark">f<span>.</span></span><span>FundMe<span class="brand-caption">让支持发生</span></span></a>
+    <div class="nav-label">你的募捐空间</div>
+    <nav aria-label="主导航">
+      <a class="nav-item active" href="#donate"><svg viewBox="0 0 24 24"><path d="M3 10 12 3l9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></svg>募捐概览<span class="nav-dot"></span></a>
+      <a class="nav-item" href="#activity"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>链上动态</a>
+      <a class="nav-item" href="#contract"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-11-2 14"/></svg>合约信息</a>
+    </nav>
+    <div class="sidebar-note"><span class="leaf">↗</span><strong>每一份支持，都有记录。</strong><p>捐款与提现直接写入区块链，过程清晰可查。</p></div>
+    <div class="sidebar-bottom"><span class="tiny-dot"></span>本地测试环境 <span>v1.0</span></div>
+  </aside>
+
+  <main>
+    <header class="topbar"><div class="breadcrumb">工作台 <span>/</span> 募捐概览</div><div class="top-actions"><span class="network-pill"><i id="network-dot"></i><span id="network-label">连接本地节点中</span></span><button class="wallet-button" id="connect-top" type="button"><svg viewBox="0 0 24 24"><path d="M20 8V5H5a2 2 0 0 0 0 4h15v11H5a2 2 0 0 1-2-2V7m17 5h-5v5h5"/></svg><span id="connect-label">连接账户</span></button></div></header>
+
+    <section class="intro"><div><div class="eyebrow"><span></span> SMALL ACTS. REAL IMPACT.</div><h1>让每一份支持，<br>都有迹可循<span class="green">。</span></h1><p>从一笔小小的捐款开始。连接账户，让支持真正发生。</p></div><div class="intro-art" aria-hidden="true"><div class="art-ring ring-one"></div><div class="art-ring ring-two"></div><div class="art-center"><svg viewBox="0 0 64 64"><path d="M32 49S10 35 10 22a12 12 0 0 1 22-6 12 12 0 0 1 22 6c0 13-22 27-22 27Z"/></svg><span>ONCHAIN GOOD</span></div><span class="art-spark spark-one">✦</span><span class="art-spark spark-two">+</span></div></section>
+
+    <div class="connection-error" id="connection-error" role="alert" hidden><span id="connection-message"></span><button id="retry" type="button">重新连接</button></div>
+
+    <section class="stats" aria-label="募捐数据">
+      <article class="stat"><div class="stat-label">合约当前余额 <span>↗</span></div><div class="stat-value"><span id="pool-balance">—</span><small>ETH</small></div><div class="stat-foot" id="pool-usd">等待链上数据</div></article>
+      <article class="stat"><div class="stat-label">历史累计募捐 <span>◎</span></div><div class="stat-value"><span id="total-raised">—</span><small>ETH</small></div><div class="stat-foot">所有成功捐款的累计金额</div></article>
+      <article class="stat"><div class="stat-label">最低捐款金额 <span>↗</span></div><div class="stat-value"><span id="minimum-usd">5.00</span><small>USD</small></div><div class="stat-foot" id="minimum-eth">正在读取 ETH / USD 报价</div></article>
+    </section>
+
+    <div class="workspace-grid">
+      <section class="card donate-card" id="donate"><div class="section-heading"><div><div class="eyebrow subtle">MAKE A CONTRIBUTION</div><h2>给好事，一点推动力</h2></div><span class="outlined-icon">↗</span></div><p class="section-description">以 ETH 发起捐款，资金直接进入募捐合约。</p>
+        <div class="mode-switch" role="group" aria-label="账户连接方式"><button type="button" class="selected" id="mode-local" aria-pressed="true">本地体验</button><button type="button" id="mode-wallet" aria-pressed="false">钱包连接</button></div>
+        <div class="account-panel"><span class="account-icon">◎</span><div><strong id="account-title">无需钱包，也能体验链上交互</strong><p id="account-description">使用 Anvil 测试账户，所有操作仅使用测试 ETH。</p></div></div>
+        <label class="field-label" for="local-account" id="local-account-label" hidden>切换测试身份</label><select id="local-account" hidden><option value="donor">捐款人 · 测试账户 2</option><option value="owner">管理员 · 测试账户 1</option></select>
+        <form id="donate-form" novalidate>
+          <label class="field-label amount-label" for="amount">捐款金额 <span id="wallet-balance">账户余额 —</span></label>
+          <div class="amount-box"><input id="amount" name="amount" value="0.01" inputmode="decimal" autocomplete="off" aria-describedby="amount-help" aria-label="ETH 捐款金额"><span class="eth-symbol">⟠</span><strong>ETH</strong></div>
+          <div class="amount-help" id="amount-help">正在获取实时换算金额</div>
+          <div class="quick-amounts" aria-label="快捷金额"><button type="button" data-amount="0.005">0.005 ETH</button><button type="button" data-amount="0.01" class="selected">0.01 ETH</button><button type="button" data-amount="0.05">0.05 ETH</button><button type="button" data-amount="0.1">0.1 ETH</button></div>
+          <button class="primary-button" id="donate-button" type="submit"><span id="donate-label">连接账户，开始支持</span><span>↗</span></button>
+          <div class="trust-line"><svg viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z"/><path d="m8 12 3 3 5-6"/></svg>当前仅使用本地测试 ETH，无真实资产交易</div>
+        </form>
+      </section>
+
+      <div class="right-column">
+        <section class="card overview-card"><div class="section-heading"><h2>你的支持</h2><span class="soft-badge" id="account-role">未连接</span></div><div class="your-contribution"><span id="my-contribution">—</span><small>ETH</small></div><p>该账户历史累计捐款</p><div class="account-detail"><span>当前账户</span><button id="copy-account" type="button" disabled title="复制账户地址">— <span>⧉</span></button></div><div class="owner-box" id="owner-box" hidden><div><strong>管理员操作</strong><p>可提取合约内的全部 ETH</p></div><button id="withdraw-button" type="button" class="secondary-button">提取资金 ↗</button></div></section>
+        <section class="card quote-card"><div class="section-heading"><h2>价格预言机</h2><span class="quote-status" id="quote-status">读取中</span></div><div class="price-row"><span class="eth-coin">⟠</span><div><strong>Ethereum</strong><span>ETH / USD</span></div><b id="eth-price">—</b></div><div class="quote-footer"><span>Chainlink 兼容接口</span><span>本地 Mock 报价</span></div></section>
+        <div class="info-note"><span>ⓘ</span><p>这是管理员托管型募捐。捐款后无法退款，管理员可随时提现；当前没有目标金额与截止时间。</p></div>
+      </div>
+    </div>
+
+    <section class="card activity-card" id="activity"><div class="section-heading"><div><h2>链上动态<span class="count-badge" id="activity-count">0</span></h2><p class="section-description">每一笔支持，都是一条可查询的记录。</p></div><button id="refresh" type="button" class="text-button">↻ 刷新数据</button></div><div class="table-wrap"><table><thead><tr><th>类型 / 账户</th><th>金额</th><th>交易哈希</th><th>状态</th></tr></thead><tbody id="activity-body"></tbody></table></div><div class="empty-state" id="empty-state"><span>↗</span><strong>第一份支持，可以从你开始</strong><p>成功捐款或提现后，交易记录会出现在这里。</p></div></section>
+
+    <footer id="contract"><div><span class="footer-brand">FundMe<span>↗</span></span><span>小小支持，真实发生。</span></div><button id="copy-contract" type="button" title="复制合约地址">合约地址 <span id="contract-address">—</span> ⧉</button><span class="footer-network">Anvil · Chain 31337</span></footer>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden><span id="toast-icon">↗</span><div><strong id="toast-title"></strong><p id="toast-description"></p><button id="copy-transaction" type="button" hidden>复制交易哈希 ⧉</button></div><button id="close-toast" class="toast-close" aria-label="关闭通知" type="button">×</button></div>
+</body>
+</html>
